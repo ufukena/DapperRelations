@@ -8,13 +8,13 @@ namespace DapperRelations.Infrastructure.Models
     {
         
         public required DateTime? CreatedDate { get; set; }
-        public required User CreatedBy { get; set; }
+        public required int CreatedId { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
-        public User? ModifiedBy { get; set; }
+        public int? ModifiedId { get; set; }
 
         public DateTime? DeletedDate { get; set; }
-        public User? DeletedBy { get; set; }
+        public int? DeletedId { get; set; }
 
         public bool? DeletedFlg { get; set; }
         

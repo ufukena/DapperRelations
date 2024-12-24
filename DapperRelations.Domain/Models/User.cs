@@ -1,6 +1,6 @@
 ﻿
 
-namespace DapperRelations.Infrastructure.Models
+namespace DapperRelations.Domain.Models
 {
     public class User
     {

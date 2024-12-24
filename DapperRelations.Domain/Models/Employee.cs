@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DapperRelations.Infrastructure.Models;
+
 
 namespace DapperRelations.Domain.Models
 {
-    internal class Employee
+    public class Employee : BaseAuditableEntity
     {
+        public required string EmployeeName { get; set; }
+
+        public required string EmployeeAddress { get; set; }
+
+        public required EmployeeType EmployeeType { get; set; }
+
+        public required int OrderNo { get; set; }        
+
     }
 }

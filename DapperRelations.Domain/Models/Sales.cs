@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DapperRelations.Infrastructure.Models;
+
 
 namespace DapperRelations.Domain.Models
 {
-    internal class Sales
+    public class Sales : BaseAuditableEntity
     {
+        
+        public required DateTime SalesDate { get; set; }
+
+        public required Customer Customer { get; set; }
+
+        public required Employee Employe { get; set; }
+        
+        public required int OrderNo { get; set; }
+
+
     }
 }

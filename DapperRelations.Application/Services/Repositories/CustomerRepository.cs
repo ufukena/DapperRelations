@@ -3,7 +3,6 @@ using DapperRelations.Application.Context.Contract;
 using DapperRelations.Application.Context.Database;
 using DapperRelations.Application.Services.Contracts;
 using DapperRelations.Domain.Models;
-using DapperRelations.Infrastructure.Models;
 using System.Data;
 
 
@@ -23,113 +22,64 @@ namespace DapperRelations.Application.Services.Repositories
         public async Task<Customer?> Get(int id)
         {
             var sql = @"SELECT 
-                        ct.Id,
-                        ct.CustomerTypeName,
-                        ct.CustomerTypeDescription,
-                        ct.OrderNo,
-                        ct.CreatedDate,
-                        ct.ModifiedDate,
-                        u1.Id,
-                        u1.UserName,                       
-                        u2.Id,
-                        u2.UserName,
-                        u3.Id,
-                        u3.UserName
-                        FROM CustomerType ct
-                        JOIN User u1 ON u1.Id = ct.CreatedById
-                        LEFT JOIN User u2 ON u2.Id = ct.ModifiedById 
-                        LEFT JOIN User u3 ON u3.Id = ct.DeletedById 
-                        WHERE ct.Id = @Id;";
+                        c.*,
+                        ct.*
+                        FROM Customer c
+                        JOIN CustomerType ct ON ct.Id = c.CustomerTypeId
+                        WHERE c.Id = @Id AND c.DeletedFlg = 0;";
 
 
             using (IDbConnection connection = databaseContext.CreateConnection())
             {
                 var parameters = new { Id = id };
 
-                var customerType = await connection.QueryAsync<Customer, User, User, User, Customer>(
+                var customer = await connection.QueryAsync<Customer, CustomerType, Customer>(
                   sql,
-                  (customerType, createdBy, modifiedBy, deletedBy) =>
+                  (customer,customerType) =>
                   {
-                      customerType.CreatedBy = createdBy;
-                      customerType.ModifiedBy = modifiedBy;
-                      customerType.DeletedBy = deletedBy;
+                      customer.CustomerType = customerType;                      
 
-                      return customerType;
+                      return customer;
                   },
                   param: parameters,
-                  splitOn: "Id,Id,Id"
+                  splitOn: "Id"
                   );
 
-                return customerType.FirstOrDefault();
-
-                //splitOn => Every item signs  begining new objet => UserId(u1 begin),UserId(u2 begin),UserId(u3 begin)
+                return customer.FirstOrDefault();                
             }
         }
 
         public async Task<List<Customer>> GetAll()
         {
             var sql = @"SELECT 
-                        ct.Id,
-                        ct.CustomerTypeName,
-                        ct.CustomerTypeDescription,
-                        ct.OrderNo,
-                        ct.CreatedDate,
-                        ct.ModifiedDate,
-                        u1.Id,
-                        u1.UserName,                       
-                        u2.Id,
-                        u2.UserName,
-                        u3.Id,
-                        u3.UserName
-                        FROM CustomerType ct
-                        JOIN User u1 ON u1.Id = ct.CreatedById
-                        LEFT JOIN User u2 ON u2.Id = ct.ModifiedById 
-                        LEFT JOIN User u3 ON u3.Id = ct.DeletedById 
-                        WHERE ct.Id = @Id;";
+                        c.*,
+                        ct.*
+                        FROM Customer c
+                        JOIN CustomerType ct ON ct.Id = c.CustomerTypeId
+                        WHERE c.DeletedFlg = 0;";
 
 
             using (IDbConnection connection = databaseContext.CreateConnection())
-            {                
-
-                var customerType = await connection.QueryAsync<Customer, User, User, User, Customer>(
+            {
+                
+                var customer = await connection.QueryAsync<Customer, CustomerType, Customer>(
                   sql,
-                  (customerType, createdBy, modifiedBy, deletedBy) =>
+                  (customer, customerType) =>
                   {
-                      customerType.CreatedBy = createdBy;
-                      customerType.ModifiedBy = modifiedBy;
-                      customerType.DeletedBy = deletedBy;
+                      customer.CustomerType = customerType;
 
-                      return customerType;
+                      return customer;
                   },                  
-                  splitOn: "Id,Id,Id"
+                  splitOn: "Id"
                   );
 
-                return customerType.ToList();
-
-                //splitOn => Every item signs  begining new objet => UserId(u1 begin),UserId(u2 begin),UserId(u3 begin)
+                return customer.ToList();
+                
             }
         }
 
 
-        public Task<Customer> Create(Customer entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Delete(Customer entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Customer> Update(Customer entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetAutoOrder()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         
     }

@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DapperRelations.Infrastructure.Models;
+
 
 namespace DapperRelations.Domain.Models
 {
-    internal class Product
+    public class Product : BaseAuditableEntity
     {
+        
+        public required string ProductName { get; set; }
+        public required ProductType ProductType { get; set; }
+        public decimal UnitPrice { get; set; }
+        public string Color { get; set; } = string.Empty;
+        public required int OrderNo { get; set; }
+
     }
 }
