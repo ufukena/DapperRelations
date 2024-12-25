@@ -4,7 +4,7 @@ using DapperRelations.Infrastructure.Contracts;
 
 namespace DapperRelations.Application.Services.Contracts
 {
-    public interface IEmployeeTypeRepository : IGeRepository<EmployeeType>
+    public interface IEmployeeTypeRepository : IGetRepository<EmployeeType>
     {
     }
 }

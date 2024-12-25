@@ -4,7 +4,7 @@ using DapperRelations.Infrastructure.Contracts;
 
 namespace DapperRelations.Application.Services.Contracts
 {
-    public interface ISalesDetailRepository : IGeRepository<SalesDetail>
+    public interface ISalesDetailRepository : IGetRepository<SalesDetail>
     {
     }
 }

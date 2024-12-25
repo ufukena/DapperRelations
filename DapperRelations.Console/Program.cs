@@ -65,9 +65,9 @@ var productList = await p.GetAll();
 //SALES
 
 
-//ISalesRepository s = new SalesRepository(null);
-//var sales = await s.Get(1);
-//var salesList = await s.GetAll();
+ISalesRepository s = new SalesRepository(null);
+var sales = await s.Get(1);
+var salesList = await s.GetAll();
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

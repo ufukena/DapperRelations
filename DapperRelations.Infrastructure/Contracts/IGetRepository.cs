@@ -2,7 +2,7 @@
 namespace DapperRelations.Infrastructure.Contracts
 {
 
-    public interface IGeRepository<TEntity>
+    public interface IGetRepository<TEntity>
     {
         Task<TEntity> Get(int id);
         Task<List<TEntity>> GetAll();
