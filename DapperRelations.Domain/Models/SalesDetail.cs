@@ -3,7 +3,7 @@
 
 namespace DapperRelations.Domain.Models
 {
-    public class SalesDetails : BaseAuditableEntity
+    public class SalesDetail : BaseAuditableEntity
     {
         public required Sales Sales { get; set; }
         public required Product Product { get; set; }

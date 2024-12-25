@@ -10,9 +10,12 @@ namespace DapperRelations.Domain.Models
 
         public required Customer Customer { get; set; }
 
-        public required Employee Employe { get; set; }
+        public required Employee Employee { get; set; }
         
         public required int OrderNo { get; set; }
+
+
+        public List<SalesDetail> SalesDetails { get; set; } = new();
 
 
     }
