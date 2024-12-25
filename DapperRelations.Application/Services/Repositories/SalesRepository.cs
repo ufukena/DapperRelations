@@ -3,8 +3,6 @@ using DapperRelations.Application.Context.Contract;
 using DapperRelations.Application.Context.Database;
 using DapperRelations.Application.Services.Contracts;
 using DapperRelations.Domain.Models;
-using System;
-using System.Collections.Specialized;
 using System.Data;
 
 
@@ -27,13 +25,15 @@ namespace DapperRelations.Application.Services.Repositories
                         s.*,
                         c.*, ct.*,
                         em.*, et.*,
-                        sd.*
+                        sd.*,
+                        p.*
                         FROM Sales s
                         JOIN Customer c ON c.Id = s.CustomerId
                         JOIN CustomerType ct ON ct.Id = c.CustomerTypeId
                         JOIN Employee em ON em.Id = s.EmployeeId
                         JOIN EmployeeType et ON et.Id = em.EmployeeTypeId
-                        JOIN SalesDetail sd ON sd.SalesId = s.Id
+                        JOIN SalesDetail sd ON s.Id = sd.SalesId
+                        JOIN Product p ON p.Id = sd.ProductId
                         WHERE s.Id = @Id AND s.DeletedFlg = 0;";
 
 
@@ -43,9 +43,9 @@ namespace DapperRelations.Application.Services.Repositories
 
                 var salesDictionary = new Dictionary<long, Sales>();
 
-                var sales = await connection.QueryAsync<Sales, Customer, CustomerType, Employee, EmployeeType, SalesDetail, Sales>(
+                var sales = await connection.QueryAsync<Sales, Customer, CustomerType, Employee, EmployeeType, SalesDetail, Product, Sales>(
                   sql,
-                  (sales, customer, customerType, employee, employeeType, salesDetail) =>
+                  (sales, customer, customerType, employee, employeeType, salesDetail, product) =>
                   {
                       if (salesDictionary.TryGetValue(sales.Id, out var existingOrder))
                       {
@@ -61,8 +61,9 @@ namespace DapperRelations.Application.Services.Repositories
                       sales.Employee = employee;
                       sales.Employee.EmployeeType = employeeType;
 
-                      //Product in Sales not bind..if you want you can add here..
+                      
 
+                      salesDetail.Product = product;
                       sales.SalesDetails.Add(salesDetail);
                       
                       return sales;
@@ -83,13 +84,15 @@ namespace DapperRelations.Application.Services.Repositories
                         s.*,
                         c.*, ct.*,
                         em.*, et.*,
-                        sd.*
+                        sd.*,
+                        p.*
                         FROM Sales s
                         JOIN Customer c ON c.Id = s.CustomerId
                         JOIN CustomerType ct ON ct.Id = c.CustomerTypeId
                         JOIN Employee em ON em.Id = s.EmployeeId
                         JOIN EmployeeType et ON et.Id = em.EmployeeTypeId
                         JOIN SalesDetail sd ON s.Id = sd.SalesId
+                        JOIN Product p ON p.Id = sd.ProductId
                         WHERE s.DeletedFlg = 0;";
 
 
@@ -98,9 +101,9 @@ namespace DapperRelations.Application.Services.Repositories
                 
                 var salesDictionary = new Dictionary<int, Sales>();
 
-                var sales = await connection.QueryAsync<Sales, Customer, CustomerType, Employee, EmployeeType, SalesDetail, Sales>(
+                var sales = await connection.QueryAsync<Sales, Customer, CustomerType, Employee, EmployeeType, SalesDetail, Product, Sales>(
                   sql,
-                  (sales, customer, customerType, employee, employeeType, salesDetail) =>
+                  (sales, customer, customerType, employee, employeeType, salesDetail, product) =>
                   {
 
                       Sales salesEntity;
@@ -115,11 +118,13 @@ namespace DapperRelations.Application.Services.Repositories
                       sales.Employee = employee;
                       sales.Employee.EmployeeType = employeeType;
 
-                      //Product in Sales not bind..if you want you can add here..
+                      
 
                       if (!salesEntity.SalesDetails.Any(x => x.Id == salesDetail.Id))
                       {
+                          salesDetail.Product = product;
                           salesEntity.SalesDetails.Add(salesDetail);
+
                       }
 
                       return salesEntity;
